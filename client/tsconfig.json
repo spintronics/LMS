@@ -1,0 +1,13 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "ES6",
+    "sourceMap": true,
+    "outDir": "build",
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "experimentalDecorators": true
+  },
+
+  "include": ["src/**/*.ts", "src/**/*.d.ts"]
+}

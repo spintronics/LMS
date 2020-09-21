@@ -1,0 +1,31 @@
+{
+  "name": "LMS",
+  "version": "1.0.0",
+  "description": "using software to improve learning experiences",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spintronics/LMS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/spintronics/LMS/issues"
+  },
+  "homepage": "https://github.com/spintronics/LMS#readme",
+  "devDependencies": {
+    "@jsenv/node-module-import-map": "^12.0.2",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "@material/mwc-button": "^0.18.0",
+    "axios": "^0.20.0",
+    "lit-element": "^2.4.0",
+    "lit-html": "^1.3.0"
+  }
+}
