@@ -1,6 +1,6 @@
 import "@material/mwc-button";
 import { LitElement, html, customElement, property, css } from "lit-element";
-import { api, apiUrl } from "../../lib/api";
+import { api, apiUrl } from "../../lib/api.js";
 
 interface QuestionResponse {
   content: string;
@@ -34,17 +34,15 @@ export class Question extends LitElement {
 
   render() {
     return html`
-      <>
+      <div>
         <p id="question">${this.question}</p>
-        <mwc-button @click=${this.getNewQuestion.bind(
-          this,
-          true
-        )}>Correct</mwc-button>
-        <mwc-button @click=${this.getNewQuestion.bind(
-          this,
-          false
-        )}>Incorrect</mwc-button>
-      </>
+        <mwc-button @click=${this.getNewQuestion.bind(this, true)}
+          >Correct</mwc-button
+        >
+        <mwc-button @click=${this.getNewQuestion.bind(this, false)}
+          >Incorrect</mwc-button
+        >
+      </div>
     `;
   }
 }

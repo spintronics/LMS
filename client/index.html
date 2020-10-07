@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title></title>
     <script src="build/scripts/index.js" type="module-shim"></script>
-    <script type="importmap-shim">
+    <script type="importmap-shim" src="import_map.json">
       {
         "imports": {
-          "lit-html": "https://unpkg.com/lit-html?module",
+          "@material/mwc-button": "https://unpkg.com/@material/mwc-button?module",
+          "axios": "https://unpkg.com/axios?module",
           "lit-element": "https://unpkg.com/lit-element?module",
-          "ramda": "https://unpkg.com/ramda?module",
-          "@material": "https://unpkg.com/@material",
-          "axios": "https://unpkg.com/axios?module"
+          "lit-html": "https://unpkg.com/lit-html?module"
         }
       }
     </script>
@@ -22,5 +21,7 @@
       src="https://unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.js"
     ></script>
   </head>
-  <body></body>
+  <body>
+    it's happening!
+  </body>
 </html>
