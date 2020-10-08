@@ -10,3 +10,5 @@ todo
 - handle api requests on server
 - implement a stream interface for components to decouple them from the data source
 - figure out how to implement an interlanguage spec (perhaps from a graphql scheme)
+
+Import components at the page level (no root app entry) and use normal html. actions should be performed through global streams. there's no reason to worry about including dependencies in components since nothing is bundled.

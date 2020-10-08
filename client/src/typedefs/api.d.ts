@@ -9,5 +9,6 @@ declare namespace LMS.api {
     data: { [key: string]: any };
     timestamp?: string;
     responseType?: string;
+    success: boolean;
   }
 }

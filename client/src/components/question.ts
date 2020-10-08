@@ -1,6 +1,6 @@
 import "@material/mwc-button";
 import { LitElement, html, customElement, property, css } from "lit-element";
-import { api, apiUrl } from "../../lib/api.js";
+import { api, apiUrl } from "../lib/api.js";
 
 interface QuestionResponse {
   content: string;
@@ -23,10 +23,13 @@ export class Question extends LitElement {
   async getNewQuestion(correctResponse: boolean) {
     try {
       //this is pretty verbose.. should make api a class that does this for the consumer
-      let newQuestion = api<LMS.api.QuestionRequest, LMS.Question>(
+      let response = await api<LMS.api.QuestionRequest, LMS.Question>(
         apiUrl.question,
         { questionSet: this.questionSet }
       );
+      if (response.success) {
+        this.question = response.data.content;
+      }
     } catch (e) {
       this.error = e;
     }
