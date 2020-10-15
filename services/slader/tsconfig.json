@@ -1,0 +1,17 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "target": "ES6",
+        "sourceMap": true,
+        "outDir": "build",
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "rootDir": "src",
+        "allowSyntheticDefaultImports": true
+        // "experimentalDecorators": true,
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.d.ts"
+    ]
+}
