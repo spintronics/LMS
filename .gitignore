@@ -2,6 +2,7 @@ __pycache__
 client/node_modules
 client/build
 http/target
-# *.json
 **/node_modules
 **/build
+http/db/data/*
+# *.json

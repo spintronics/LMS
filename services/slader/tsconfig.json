@@ -7,8 +7,8 @@
         "esModuleInterop": true,
         "moduleResolution": "node",
         "rootDir": "src",
-        "allowSyntheticDefaultImports": true
-        // "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "module": "commonjs"
     },
     "include": [
         "src/**/*.ts",
