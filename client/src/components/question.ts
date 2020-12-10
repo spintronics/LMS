@@ -1,16 +1,16 @@
-import "@material/mwc-button";
-import { LitElement, html, customElement, property, css } from "lit-element";
-import { api, apiUrl } from "../lib/api.js";
+import '@material/mwc-button';
+import { LitElement, html, customElement, property, css } from 'lit-element';
+import { api, apiUrl } from '../lib/api.js';
 
 interface QuestionResponse {
   content: string;
 }
 
-@customElement("lms-question")
+@customElement('lms-question')
 export class Question extends LitElement {
-  @property({ type: String }) question = "";
-  @property({ type: String }) error = "";
-  @property({ type: String }) questionSet = "default";
+  @property({ type: String }) question = '';
+  @property({ type: String }) error = '';
+  @property({ type: String }) questionSet = 'default';
   static get styles() {
     return css`
       #question {
