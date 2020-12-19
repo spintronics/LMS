@@ -3,6 +3,7 @@
     "@material/mwc-button": "https://unpkg.com/@material/mwc-button?module",
     "axios": "https://unpkg.com/axios?module",
     "lit-element": "https://unpkg.com/lit-element?module",
-    "lit-html": "https://unpkg.com/lit-html?module"
+    "lit-html": "https://unpkg.com/lit-html?module",
+    "ramda": "https://unpkg.com/ramda?module"
   }
 }

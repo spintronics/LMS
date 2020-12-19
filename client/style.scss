@@ -1,0 +1,29 @@
+$white: #222526;
+$black: #f5e8c4;
+$primary: #597683;
+$secondary: #91c9b7;
+$highlight: #d3656b;
+
+@mixin dark-theme {
+  --white: #{$white};
+  --black: #{$black};
+  --primary: #{$primary};
+  --secondary: #{$secondary};
+  --highlight: #{$highlight};
+  --mdc-theme-primary: #{$primary};
+  --mdc-theme-secondary: #{$secondary};
+  --mdc-theme-text-primary-on-background: #{$black};
+}
+
+:root {
+  @include dark-theme();
+}
+
+mwc-button {
+  @include dark-theme;
+}
+
+html {
+  background-color: $white;
+  color: $black;
+}

@@ -1,14 +1,14 @@
 //fetch based api with types as per spec
-export const api = function <R, T>(
+export const request = function <R, T>(
   url: string,
   data?: R
 ): Promise<LMS.api.Response & { data: T }> {
   let config: RequestInit = {
-    method: data ? "POST" : "GET",
+    method: data ? 'POST' : 'GET',
   };
   if (data) {
     config.headers = {
-      "Content-type": "application/json",
+      'Content-type': 'application/json',
     };
     config.body = JSON.stringify(data);
   }
@@ -21,6 +21,8 @@ export const api = function <R, T>(
   });
 };
 
+export const getQuestions = () => request<null, string[]>(apiUrl.questions);
+
 export enum apiUrl {
-  question = "/api/LMS/question",
+  questions = '/api/lms/questions',
 }

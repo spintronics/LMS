@@ -1,14 +1,9 @@
-import '@material/mwc-button';
 import { LitElement, html, customElement, property, css } from 'lit-element';
-import { api, apiUrl } from '../lib/api.js';
-
-interface QuestionResponse {
-  content: string;
-}
+import { state, Listener, ActionName } from '../state.js';
 
 @customElement('lms-question')
 export class Question extends LitElement {
-  @property({ type: String }) question = '';
+  @property({ type: String }) src = '';
   @property({ type: String }) error = '';
   @property({ type: String }) questionSet = 'default';
   static get styles() {
@@ -17,36 +12,29 @@ export class Question extends LitElement {
         size: 15px;
         font-family: Roboto;
       }
+      img {
+        width: 100%;
+      }
     `;
   }
 
-  async getNewQuestion(correctResponse: boolean) {
-    try {
-      //this is pretty verbose.. should make api a class that does this for the consumer
-      let response = await api<LMS.api.QuestionRequest, LMS.Question>(
-        apiUrl.question,
-        { questionSet: this.questionSet }
-      );
-      if (response.success) {
-        this.question = response.data.content;
-      }
-    } catch (e) {
-      this.error = e;
-    }
+  updateQuestion;
+
+  constructor() {
+    super();
+    this.updateQuestion = new Listener((message) => {
+      this.src = message.details.path;
+    });
+    state.subscribe(ActionName.openQuestion, this.updateQuestion);
+  }
+
+  question() {
+    if (!this.src) return null;
+    return html` <img src=${'/questions/' + this.src} /> `;
   }
 
   render() {
-    return html`
-      <div>
-        <p id="question">${this.question}</p>
-        <mwc-button @click=${this.getNewQuestion.bind(this, true)}
-          >Correct</mwc-button
-        >
-        <mwc-button @click=${this.getNewQuestion.bind(this, false)}
-          >Incorrect</mwc-button
-        >
-      </div>
-    `;
+    return html` <div>${this.question()}</div> `;
   }
 }
 

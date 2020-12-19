@@ -1,0 +1,28 @@
+:root {
+  --white: #222526;
+  --black: #f5e8c4;
+  --primary: #597683;
+  --secondary: #91c9b7;
+  --highlight: #d3656b;
+  --mdc-theme-primary: #597683;
+  --mdc-theme-secondary: #91c9b7;
+  --mdc-theme-text-primary-on-background: #f5e8c4;
+}
+
+mwc-button {
+  --white: #222526;
+  --black: #f5e8c4;
+  --primary: #597683;
+  --secondary: #91c9b7;
+  --highlight: #d3656b;
+  --mdc-theme-primary: #597683;
+  --mdc-theme-secondary: #91c9b7;
+  --mdc-theme-text-primary-on-background: #f5e8c4;
+}
+
+html {
+  background-color: #222526;
+  color: #f5e8c4;
+}
+
+/*# sourceMappingURL=style.css.map */

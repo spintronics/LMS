@@ -4,8 +4,8 @@
     "target": "ES6",
     "sourceMap": true,
     "moduleResolution": "node",
-    // "outDir": "build",
-    // "rootDir": "src",
+    "outDir": "build",
+    "rootDir": "src",
     "experimentalDecorators": true
   },
 

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c"
+    "build": "sass style.scss style.css"
   },
   "repository": {
     "type": "git",
@@ -27,14 +27,19 @@
     "rollup": "^2.34.2",
     "rollup-plugin-scss": "^2.6.1",
     "rollup-plugin-typescript": "^1.0.1",
+    "sass": "^1.30.0",
+    "ts-loader": "^8.0.11",
     "typescript": "^4.1.2",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
     "@material/mwc-button": "^0.18.0",
+    "@material/mwc-list": "^0.20.0",
+    "@types/ramda": "^0.27.32",
     "axios": "^0.20.0",
     "lit-element": "^2.4.0",
-    "lit-html": "^1.3.0"
+    "lit-html": "^1.3.0",
+    "ramda": "^0.27.1"
   }
 }
