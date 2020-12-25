@@ -1,31 +1,31 @@
 import spaced_repition
 
+
 def identity(x):
     return x
 
-def test(message = '', boolean = False):
+
+def test(message="", boolean=False):
     return boolean or message
 
-def testAll(message = '', *tests):
+
+def testAll(message="", *tests):
     return all([test(x) for x in tests]) or message
 
-def run(
-    tests = [],
-    context = {},
-    beforeEach = lambda x: x
-):
-    ctx = {**{'results': []}, **context}
+
+def run(tests=[], context={}, beforeEach=lambda x: x):
+    ctx = {**{"results": []}, **context}
     for t in tests:
         result = t(beforeEach(ctx))
-        if not result: ctx['results'].append(t.__name__)
+        if not result:
+            ctx["results"].append(t.__name__)
 
-    if not len(ctx['results']):
-        print('all tests passed')
+    if not len(ctx["results"]):
+        print("all tests passed")
     else:
-        print('failed tests:')
-        for fail in ctx['results']:
+        print("failed tests:")
+        for fail in ctx["results"]:
             print(fail)
-
 
 
 # def it(spec, fn, config = {}):
@@ -46,9 +46,10 @@ def run(
 # the question selector should be should be weighted towards
 # bins at the start and exclude questions asked in the past n questions
 
+
 def front_bins_more_likely(ctx):
-    selectQuestion = spaced_repition.questionGenerator(config = {'spread': .6})
-    question_bins = [[1],[2],[3],[4],[5]]
+    selectQuestion = spaced_repition.questionGenerator(config={"spread": 0.6})
+    question_bins = [[1], [2], [3], [4], [5]]
     results = {
         1: 0,
         2: 0,
@@ -63,8 +64,8 @@ def front_bins_more_likely(ctx):
 
 
 def doesnt_ask_same_question(ctx):
-    selectQuestion = spaced_repition.questionGenerator({'space': 4})
-    question_bins = [[1],[2],[3],[4],[5]]
+    selectQuestion = spaced_repition.questionGenerator({"space": 4})
+    question_bins = [[1], [2], [3], [4], [5]]
     history = []
 
     for _ in range(20):
@@ -77,31 +78,33 @@ def doesnt_ask_same_question(ctx):
 
     return True
 
+
 def false_if_no_questions(ctx):
-    return not ctx['selectQuestion']([[]])
+    return not ctx["selectQuestion"]([[]])
+
 
 def removes_from_last_bin(ctx):
     result = spaced_repition.updateBins(True, [[1]], 1)
     return len(result[0]) == 0
 
+
 def transfers_to_next_bin(ctx):
-    result = spaced_repition.updateBins(True, [[1],[]], 1)
+    result = spaced_repition.updateBins(True, [[1], []], 1)
     return result == [[], [1]]
+
 
 def question_history_underflow(ctx):
     """
     questions can still be selected irregardless of spacing if the pool is limited
     """
-    selectQuestion = spaced_repition.questionGenerator({'space': 10})
-    question_bins = [[1],[2],[3],[4],[5]]
+    selectQuestion = spaced_repition.questionGenerator({"space": 10})
+    question_bins = [[1], [2], [3], [4], [5]]
 
     for _ in range(10):
-        if not selectQuestion(question_bins): return False
+        if not selectQuestion(question_bins):
+            return False
 
     return True
-
-
-
 
 
 run(
@@ -111,10 +114,7 @@ run(
         false_if_no_questions,
         removes_from_last_bin,
         transfers_to_next_bin,
-        question_history_underflow
+        question_history_underflow,
     ],
-    beforeEach = lambda ctx: {
-        'selectQuestion': spaced_repition.questionGenerator()
-    }
-
+    beforeEach=lambda ctx: {"selectQuestion": spaced_repition.questionGenerator()},
 )

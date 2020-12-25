@@ -2,5 +2,7 @@
   "emmet.includeLanguages": {
     "typescript": "html"
   },
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "python.pythonPath": "C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
+  "python.formatting.provider": "black"
 }

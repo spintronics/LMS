@@ -1,6 +1,7 @@
 import { css, customElement, html, LitElement, property } from 'lit-element';
 import {
   assocPath,
+  concat,
   flatten,
   init,
   last,
@@ -19,16 +20,8 @@ import { state, ActionName, Listener } from '../state.js';
 import { getQuestions } from '../lib/api.js';
 import { $assocPath } from '../lib/util.js';
 
-interface TopicNode {
-  expanded?: boolean;
-  unolded?: boolean;
-  weight?: number;
-  enabled?: boolean;
-  [key: string]: any | TopicNode;
-}
-
 enum TopicListActions {
-  updateWeight,
+  updateWeight = 'updateWeight',
 }
 
 //initialize weights
@@ -46,8 +39,11 @@ export class TopicList extends LitElement {
     state.register(
       TopicListActions.updateWeight,
       (state: any, data) => {
-        state.topics[data.path] = data.weight;
-        return state;
+        return assocPath(
+          `topics~${data.path.join('~')}~weight`.split('~'),
+          data.weight,
+          state
+        );
       },
       this.listeners.updateWeight
     );
@@ -56,12 +52,17 @@ export class TopicList extends LitElement {
     super.disconnectedCallback();
     values(this.listeners).forEach((l) => l.destroy());
   }
+  firstUpdated() {
+    this.fetchTopics();
+  }
   protected async fetchTopics() {
-    let paths = await getQuestions();
+    let [err, paths] = await getQuestions();
+    if (err) return;
     let topicTree = pipe(
       map(pipe(replace('../client/questions\\', ''), split(/[\\,\/]/))),
-      reduce((a, parts) => assocPath(parts, last(parts), a), {})
+      reduce((a, parts) => assocPath(parts, { is_question: true }, a), {})
     )(paths.data);
+    state.set('topics', topicTree);
     this.topicTree = topicTree;
     this.topicTree.expanded = true;
   }
@@ -127,7 +128,7 @@ export class TopicList extends LitElement {
     if (isNaN(weight)) return;
     state.dispatch(TopicListActions.updateWeight, { path, weight });
   }
-  buildList(node, name = 'Topics', path = []) {
+  buildList(node: TopicNode, name = 'Topics', path = []) {
     if (!Object.keys(node).length) return [];
     return html`
       <div class="list-header">
@@ -154,19 +155,19 @@ export class TopicList extends LitElement {
       </div>
       <mwc-list ?expanded=${node.expanded}>
         ${Object.entries(node)
-          .map(([key, value]) => {
+          .map(([key, value], index) => {
             if (typeof value == 'object') {
+              if (value.is_question) {
+                return html`<mwc-list-item
+                  @click=${this.openProblem.bind(
+                    this,
+                    path.concat([value]).join('/')
+                  )}
+                  path=${path}
+                  >${index + 1}</mwc-list-item
+                >`;
+              }
               return this.buildList(node[key], key, path.concat([key]));
-            }
-            if (typeof value == 'string') {
-              return html`<mwc-list-item
-                @click=${this.openProblem.bind(
-                  this,
-                  path.concat([value]).join('/')
-                )}
-                path=${path}
-                >${value}</mwc-list-item
-              >`;
             }
             return null;
           })
@@ -177,9 +178,9 @@ export class TopicList extends LitElement {
   render() {
     return html`
       <div>
-        <mwc-button raised @click=${this.fetchTopics.bind(this)}
+        <!-- <mwc-button raised @click=${this.fetchTopics.bind(this)}
           >Fetch Topics</mwc-button
-        >
+        > -->
         ${this.buildList(this.topicTree)}
       </div>
     `;

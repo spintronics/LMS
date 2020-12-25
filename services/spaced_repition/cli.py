@@ -5,15 +5,14 @@ import sys
 import os
 import copy
 
-backup_filename = './bins.json'
+backup_filename = "./bins.json"
 
 
 def noop():
     pass
 
 
-
-def questionGenerator(config = {}, question_history = []):
+def questionGenerator(config={}, question_history=[]):
     """
     Keyword arguments:
     config:
@@ -21,15 +20,11 @@ def questionGenerator(config = {}, question_history = []):
     spread: the difference in weight between each bucket (front more likely)
     ignoreHistory: space has no effect
     """
-    config = {
-        **{
-            'ignoreHistory': False,
-            'space': 1,
-            'spread': .1
-        },
-        **config
-    }
-    def selectQuestion(question_bins = [[]]):
+    config = config or {}
+    question_history = question_history or []
+    config = {**{"ignoreHistory": False, "space": 10, "spread": 0.2}, **config}
+
+    def selectQuestion(question_bins=[[]]):
         """
         selected weighted random question other than most previous
 
@@ -40,13 +35,16 @@ def questionGenerator(config = {}, question_history = []):
         """
         nonlocal question_history
         result = False
-        question_total = functools.reduce(lambda tot, bucket: tot + len(bucket), question_bins, 0)
+        question_total = functools.reduce(
+            lambda tot, bucket: tot + len(bucket), question_bins, 0
+        )
 
-        if question_total == 0: return False
+        if question_total == 0:
+            return False
 
-        #adjust question history based on total questions left (shift left)
+        # adjust question history based on total questions left (shift left)
         if question_total <= len(question_history):
-            question_history = question_history[:len(question_history) - 1]
+            question_history = question_history[: len(question_history) - 1]
 
         # buckets with more questions are more likely
         # with equal items in each bucket: [.2, .2, .2, .2, .2]
@@ -54,7 +52,12 @@ def questionGenerator(config = {}, question_history = []):
         # earlier buckets are more likely
         # equal items and .5 spread: [.2, .3, .45, .675, 1.0125]
         bucket_weights = list(
-            reversed([weight * (1 + config['spread']) ** i for i, weight in enumerate(reversed(item_weights))])
+            reversed(
+                [
+                    weight * (1 + config["spread"]) ** i
+                    for i, weight in enumerate(reversed(item_weights))
+                ]
+            )
         )
         weight_sum = sum(bucket_weights)
 
@@ -70,18 +73,20 @@ def questionGenerator(config = {}, question_history = []):
         #     [relative_weights[0]]
         # )
 
-        #arbitrary limit on iterations, for want of better solution
+        # arbitrary limit on iterations, for want of better solution
         for _ in range(100):
 
             bucket = random.choices(question_bins, weights=relative_weights)
             selection = random.choice(bucket[0])
-            if(not config['ignoreHistory'] and (selection in question_history)): continue
+            if not config["ignoreHistory"] and (selection in question_history):
+                continue
             else:
                 result = selection
                 break
-        
+
         if result:
-            if len(question_history) >= config['space']: question_history = question_history[1:]
+            if len(question_history) >= config["space"]:
+                question_history = question_history[1:]
             question_history.append(result)
 
         return result
@@ -104,62 +109,66 @@ def updateBins(answered_correctly=False, question_bins=[[]], question=0):
 
 
 def save(question_bins=[[]]):
-    with open(backup_filename, 'w') as backup:
+    with open(backup_filename, "w") as backup:
         backup.write(json.dumps(question_bins))
 
 
 def load(question_bins=[[]]):
-    with open(backup_filename, 'r') as backup:
+    with open(backup_filename, "r") as backup:
         return json.loads(backup.read())
 
-def getInput(question=''):
-    return input(f'do question {question} and give result ([C]orrect [I]ncorrect E[x]it): ').lower()
+
+def getInput(question=""):
+    return input(
+        f"do question {question} and give result ([C]orrect [I]ncorrect E[x]it): "
+    ).lower()
 
 
-def handleInput(question_bins=[[]], selectQuestion = questionGenerator(), getInput = getInput):
+def handleInput(
+    question_bins=[[]], selectQuestion=questionGenerator(), getInput=getInput
+):
     """
     input loop to track which question were answered correctly
     """
 
     actions = {
-        'c': functools.partial(updateBins, True),
-        'i': functools.partial(updateBins, False)
+        "c": functools.partial(updateBins, True),
+        "i": functools.partial(updateBins, False),
     }
-    while(True):
+    while True:
         print(question_bins)
         question = selectQuestion(question_bins)
 
         if question == False:
-            print('i like what you got, good job')
+            print("i like what you got, good job")
             if os.path.exists(backup_filename):
                 os.remove(backup_filename)
             break
 
-        
         response = getInput(question)
-        
-        if response == 'x':
+
+        if response == "x":
             save(question_bins)
             break
         if not (response in actions):
-            print('invalid input')
+            print("invalid input")
             continue
 
         question_bins = actions[response](question_bins, question)
 
 
 def main():
-    questions = list(range(1,25))
+    questions = list(range(1, 25))
     binCount = 3
     question_bins = [questions] + [[] for _ in range(binCount - 1)]
 
     try:
         question_bins = load()
     except:
-        print('no stored bins')
+        print("no stored bins")
 
     handleInput(question_bins)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

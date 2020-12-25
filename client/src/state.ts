@@ -1,20 +1,33 @@
-import { assocPath, pathOr } from 'ramda';
-import { $path } from './lib/util.js';
+import { assocPath, concat, pathOr } from 'ramda';
+import { $assocPath, $getOr, $path } from './lib/util.js';
 
 export enum ActionName {
-  openQuestion,
+  openQuestion = 'openQuestion',
+  correctAnswer = 'correctAnswer',
 }
 
-export interface Message {
-  sender?: string;
-  details: any;
+interface LmsState {
+  topics: TopicNode;
+  history: string[];
+  history_size: number;
 }
+
+const defaultState = {
+  topics: {},
+  history: [],
+  history_size: 10,
+};
+
+// export interface Message {
+//   sender?: string;
+//   data: any;
+// }
 
 export class Listener {
   private active = true;
   private fn;
   destroyed = false;
-  constructor(fn: (message: Message) => any) {
+  constructor(fn: (message: any) => any) {
     this.fn = fn;
   }
   on() {
@@ -36,17 +49,20 @@ export class Listener {
   }
 }
 
-type ActionHandler = (state: object, data: any) => object;
+type ActionHandler<T> = (state: T, data: any) => object;
 
-class State {
+class State<T> {
   private pool: { [key: string]: Listener[] } = {};
-  private state = {};
+  private state: T | object = {};
   private handlers = {};
-  dispatch(name: number, data: any): Promise<any> {
+  constructor(initialState: T) {
+    this.state = initialState;
+  }
+  dispatch(name: string, data: any): Promise<any> {
     // wrap the state update and allow handlers to be async
     let update =
       name in this.handlers
-        ? this.handlers[name](this.state)
+        ? this.handlers[name](this.state, data)
         : Promise.resolve(this.state);
 
     update = (update instanceof Promise
@@ -69,13 +85,13 @@ class State {
           })
       : update;
   }
-  register(name: number, handler: ActionHandler, listener?: Listener) {
+  register(name: string, handler: ActionHandler<T>, listener?: Listener) {
     this.handlers[name] = handler;
     if (listener) {
       this.subscribe(name, listener);
     }
   }
-  subscribe(name: number, listener?: Listener) {
+  subscribe(name: string, listener?: Listener) {
     if (!(name in this.pool)) {
       this.pool[name] = [];
     }
@@ -93,4 +109,21 @@ class State {
   }
 }
 
-export const state = new State();
+export const state = new State<LmsState>(defaultState);
+
+(window as any).state = state;
+
+state.register(ActionName.correctAnswer, (state, path) => {
+  if (!path || !path.length) return state;
+  path = ['topics'].concat(path.concat(['correct_answers']));
+  return assocPath(path, $getOr(0, path, state) + 1, state);
+});
+
+state.register(ActionName.openQuestion, (state, data) => {
+  if (!data.path || !data.path.length) return state;
+  if (!state.history) state.history = [];
+  state.history.push(data.path.join('~'));
+  if (state.history.length > state.history_size) {
+    state.history.shift();
+  }
+});

@@ -1,5 +1,6 @@
 import { LitElement, html, customElement, property, css } from 'lit-element';
 import { state, Listener, ActionName } from '../state.js';
+import { selectQuestion } from '../lib/api.js';
 
 @customElement('lms-question')
 export class Question extends LitElement {
@@ -15,6 +16,10 @@ export class Question extends LitElement {
       img {
         width: 100%;
       }
+      #controls {
+        display: flex;
+        justify-content: space-around;
+      }
     `;
   }
 
@@ -22,8 +27,9 @@ export class Question extends LitElement {
 
   constructor() {
     super();
-    this.updateQuestion = new Listener((message) => {
-      this.src = message.details.path;
+    this.updateQuestion = new Listener((data) => {
+      this.src =
+        typeof data.path === 'string' ? data.path : data.path.join('/');
     });
     state.subscribe(ActionName.openQuestion, this.updateQuestion);
   }
@@ -33,8 +39,32 @@ export class Question extends LitElement {
     return html` <img src=${'/questions/' + this.src} /> `;
   }
 
+  async selectQuestion() {
+    let tree = state.get('topics', {});
+    let history = state.get('history', []);
+    let [err, resp] = await selectQuestion(tree, history);
+    if (!err) {
+      state.dispatch(ActionName.openQuestion, { path: resp.data });
+    }
+  }
+
+  async correctAnswer() {
+    if (this.src) {
+      state.dispatch(ActionName.correctAnswer, this.src.split('/'));
+    }
+    this.selectQuestion();
+  }
+
   render() {
-    return html` <div>${this.question()}</div> `;
+    return html`
+      <div>
+        <div id="controls">
+          <mwc-button raised @click=${this.correctAnswer}>Correct</mwc-button>
+          <mwc-button raised @click=${this.selectQuestion}>Next</mwc-button>
+        </div>
+        ${this.question()}
+      </div>
+    `;
   }
 }
 

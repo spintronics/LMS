@@ -1,8 +1,8 @@
 //fetch based api with types as per spec
-export const request = function <R, T>(
+export const request = function <T>(
   url: string,
-  data?: R
-): Promise<LMS.api.Response & { data: T }> {
+  data?: any
+): Promise<[string | null, (LMS.api.Response & { data: T }) | null]> {
   let config: RequestInit = {
     method: data ? 'POST' : 'GET',
   };
@@ -14,15 +14,19 @@ export const request = function <R, T>(
   }
   return fetch(url, config).then((response) => {
     if (!response.ok) {
-      throw new Error(response.statusText);
+      return Promise.reject([response.statusText, null]);
     } else {
-      return response.json();
+      return response.json().then((j) => [null, j]);
     }
   });
 };
 
-export const getQuestions = () => request<null, string[]>(apiUrl.questions);
+export const getQuestions = () => request<string[]>(apiUrl.questions);
+
+export const selectQuestion = (tree: object, history: string[] = []) =>
+  request<string[]>(apiUrl.selectQuestion, { tree, history });
 
 export enum apiUrl {
   questions = '/api/lms/questions',
+  selectQuestion = '/api/select_question',
 }
