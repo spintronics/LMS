@@ -36,7 +36,7 @@ export class Question extends LitElement {
 
   question() {
     if (!this.src) return null;
-    return html` <img src=${'/questions/' + this.src} /> `;
+    return html` <img src=${'/topics/' + this.src} /> `;
   }
 
   async selectQuestion() {

@@ -40,8 +40,8 @@ def get_question(body):
         history=(body.get(Params.history) or []),
         config=(body.get(Params.config) or {}),
     )
-    return {"status": 200, "data": question}
+    return {"data": question}
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", port=1000)

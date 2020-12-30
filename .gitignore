@@ -1,9 +1,9 @@
-__pycache__
+**/__pycache__
 client/node_modules
 client/build
 http/target
 **/node_modules
 **/build
 http/db/data/*
-# *.json
 client/questions
+.env

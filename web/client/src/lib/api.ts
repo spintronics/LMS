@@ -21,12 +21,12 @@ export const request = function <T>(
   });
 };
 
-export const getQuestions = () => request<string[]>(apiUrl.questions);
+export const getQuestions = () => request<[string[]]>(apiUrl.questions);
 
 export const selectQuestion = (tree: object, history: string[] = []) =>
   request<string[]>(apiUrl.selectQuestion, { tree, history });
 
 export enum apiUrl {
-  questions = '/api/lms/questions',
-  selectQuestion = '/api/select_question',
+  questions = '/api/lms/topics',
+  selectQuestion = '/api/lms/select_question',
 }

@@ -1,5 +1,5 @@
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
-use serde::Serialize;
+use actix_web::{get, HttpResponse, Responder};
+// use serde::Serialize;
 use serde_json::json;
 use std::fs;
 use std::io;

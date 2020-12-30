@@ -14,6 +14,7 @@ import {
   replace,
   set,
   split,
+  toPairs,
   values,
 } from 'ramda';
 import { state, ActionName, Listener } from '../state.js';
@@ -58,10 +59,14 @@ export class TopicList extends LitElement {
   protected async fetchTopics() {
     let [err, paths] = await getQuestions();
     if (err) return;
-    let topicTree = pipe(
-      map(pipe(replace('../client/questions\\', ''), split(/[\\,\/]/))),
-      reduce((a, parts) => assocPath(parts, { is_question: true }, a), {})
-    )(paths.data);
+    let topicTree = reduce(
+      (a, parts) => assocPath(parts, { is_question: true }, a),
+      {},
+      paths.data
+    );
+    // let topicTree = pipe(
+    //   map(pipe(replace('../client/questions\\', ''), split(/[\\,\/]/))),
+    // )(paths.data);
     state.set('topics', topicTree);
     this.topicTree = topicTree;
     this.topicTree.expanded = true;
@@ -97,7 +102,7 @@ export class TopicList extends LitElement {
   }
   expandAll(node: TopicNode, recursive = false, expand = true) {
     if (!Object.keys(node).length) return node;
-    for (let [key, child] of Object.entries(node)) {
+    for (let [key, child] of toPairs(node)) {
       if (typeof child == 'object') {
         this.expandAll(child, true, expand);
       }
@@ -111,7 +116,7 @@ export class TopicList extends LitElement {
     this.expandAll(node, false, false);
   }
   openProblem(path: string) {
-    state.dispatch(ActionName.openQuestion, { details: { path } });
+    state.dispatch(ActionName.openQuestion, { path });
   }
   enable(path: string[]) {
     this.topicTree = assocPath(path.concat('enabled'), true);
@@ -154,15 +159,12 @@ export class TopicList extends LitElement {
         ></mwc-slider>
       </div>
       <mwc-list ?expanded=${node.expanded}>
-        ${Object.entries(node)
+        ${toPairs(node)
           .map(([key, value], index) => {
             if (typeof value == 'object') {
               if (value.is_question) {
                 return html`<mwc-list-item
-                  @click=${this.openProblem.bind(
-                    this,
-                    path.concat([value]).join('/')
-                  )}
+                  @click=${this.openProblem.bind(this, path.concat([key]))}
                   path=${path}
                   >${index + 1}</mwc-list-item
                 >`;
@@ -178,9 +180,9 @@ export class TopicList extends LitElement {
   render() {
     return html`
       <div>
-        <!-- <mwc-button raised @click=${this.fetchTopics.bind(this)}
+        <mwc-button raised @click=${this.fetchTopics.bind(this)}
           >Fetch Topics</mwc-button
-        > -->
+        >
         ${this.buildList(this.topicTree)}
       </div>
     `;

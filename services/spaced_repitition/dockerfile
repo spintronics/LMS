@@ -1,0 +1,15 @@
+FROM python:3.9
+
+RUN pip install flask
+
+WORKDIR /usr/app/src
+# ADD Pipfile /tmp
+# ADD Pipfile.lock /tmp
+# RUN pipenv install
+ADD . .
+
+# RUN export FLASK_APP=serve.py
+
+# EXPOSE 1000
+
+CMD ["python", "serve.py"]
