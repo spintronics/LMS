@@ -5,5 +5,5 @@ http/target
 **/node_modules
 **/build
 http/db/data/*
-client/topics
+web/client/topics
 .env
