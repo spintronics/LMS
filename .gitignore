@@ -1,9 +1,8 @@
 **/__pycache__
-client/node_modules
-client/build
 http/target
 **/node_modules
 **/build
-http/db/data/*
-web/client/topics
-.env
+web/topics
+# .env
+shared/*
+web/src/configurations/*

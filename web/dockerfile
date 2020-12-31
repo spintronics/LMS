@@ -1,34 +1,14 @@
 FROM node:12
 
-# ADD client/package*.json /tmp/client/
-# RUN cd /tmp/client && npm i
-# RUN mkdir -p /client && cp -a /tmp/client/node_modules /client
-# ADD client /client
-
-WORKDIR /client
-ADD client/package*.json /client/
+WORKDIR /web
+ADD package*.json /web/
 RUN npm i
-ADD client /client
+ADD . /web
 RUN npm run build
-
-# ADD server/package*.json /tmp/server/
-# RUN cd /tmp/server && npm i
-# RUN mkdir -p /server && cp -a /tmp/server/node_modules /server
-# ADD server /server
-
-WORKDIR /server
-ADD server/package*.json /server/
-RUN npm i
-ADD server /server
-RUN npm run build
-
-# WORKDIR /server
-# RUN npm run build
-
 
 EXPOSE 8080
 
-CMD ["node", "./build/main.js"]
+CMD ["node", "./build/server/server.js"]
 
 
 

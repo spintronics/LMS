@@ -1,0 +1,41 @@
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "web"
+  namespace: "default"
+  labels:
+    app: "web"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "web"
+  template:
+    metadata:
+      labels:
+        app: "web"
+    spec:
+      containers:
+        - name: "web-sha256-1"
+          image: "gcr.io/lms-graphite/web@sha256:1685156aae283ffec782335899bd04ca0e947494337d9b123879525b0adaaeeb"
+---
+apiVersion: "autoscaling/v2beta1"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "web-hpa-3ksc"
+  namespace: "default"
+  labels:
+    app: "web"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "web"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+    - type: "Resource"
+      resource:
+        name: "cpu"
+        targetAverageUtilization: 80

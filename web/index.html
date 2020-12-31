@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet">
+    <script src="https://unpkg.com/@material/mwc-list?module" type="module"></script>
+    <script src="https://unpkg.com/@material/mwc-switch?module" type="module"></script>
+    <script src="https://unpkg.com/@material/mwc-button?module" type="module"></script>
+    <script src="https://unpkg.com/@material/mwc-icon-button?module" type="module"></script>
+    <script src="https://unpkg.com/@material/mwc-slider?module" type="module"></script>
+    <script src="build/client/components/topic-list.js" type="module-shim"></script>
+    <script src="build/client/components/question.js" type="module-shim"></script>
+    <script type="importmap-shim" src="import_map.json">
+      {
+        "imports": {
+          "@material/mwc-button": "https://unpkg.com/@material/mwc-button?module",
+          "@material/mwc-icon-button": "https://unpkg.com/@material/mwc-icon-button?module",
+          "@material/mwc-list": "https://unpkg.com/@material/mwc-list?module",
+          "axios": "https://unpkg.com/axios?module",
+          "lit-element": "https://unpkg.com/lit-element?module",
+          "lit-html": "https://unpkg.com/lit-html?module",
+          "ramda": "https://unpkg.com/ramda@0.27.1/es/index.js?module"
+        }
+      }
+    </script>
+    <script
+      async
+      defer
+      src="https://unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.js"
+    ></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('/butler.js')
+        });
+      }
+    </script>
+  </head>
+  <body class="dark-theme">
+    <div class="section">
+      <div class="contatiner">
+        <div class="columns">
+          <div class="column is-one-fifth">
+            <lms-topic-list></lms-topic-list>
+
+          </div>
+          <div class="column">
+            
+            <lms-question></lms-question>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </body>
+</html>
