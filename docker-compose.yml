@@ -4,13 +4,13 @@ services:
     build: ./web
     ports:
       - "80:8080"
-    image: "gcr.io/lms-graphite/web"
+    image: "web"
     # volumes:
     #   - /shared:/shared
 
   spaced-repitition:
     build: ./services/spaced_repitition
-    image: "gcr.io/lms-graphite/spaced-repitition"
+    image: "spaced-repitition"
     ports:
       - "1000:1000"
 

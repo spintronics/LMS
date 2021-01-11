@@ -18,3 +18,6 @@ export const $assocPath = curry(
   (path: string[] | string, value: any, target: object) =>
     assocPath($path(path), value, target)
 );
+
+export const toPromise = <T>(value: T | Promise<T>) =>
+  value instanceof Promise ? value : Promise.resolve<T>(value);

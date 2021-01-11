@@ -4,5 +4,8 @@
   },
   "editor.formatOnSave": true,
   "python.pythonPath": "C:\\Users\\kevin\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "black",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

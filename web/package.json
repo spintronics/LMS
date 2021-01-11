@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node -r esm ./build/server/server.js",
     "dev": "nodemon --exec tsc && node -r esm ./build/server/server.js -- mode=dev",
-    "build": "sass style.scss style.css && tsc"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "axios": "^0.21.1",
     "esm": "^3.2.25",
     "express": "^4.17.1",
+    "globby": "^11.0.1",
     "googleapis": "^39.2.0",
     "ioredis": "^4.19.4",
     "lit-element": "^2.4.0",

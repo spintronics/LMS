@@ -2,6 +2,11 @@ import { tap } from "ramda";
 import fs from "fs";
 import { promisify } from "util";
 import path from "path";
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+export const __dirname = dirname(fileURLToPath(import.meta.url));
+
 
 export function get_arg(key: string, def = ""): string {
   for (let arg of process.argv) {
@@ -17,6 +22,8 @@ export const log = (...args) => {
 };
 
 export async function get_files(dir: string): Promise<string[]> {
+  console.log(dir)
+  console.log(__dirname)
   try {
     let directory = (await promisify(fs.lstat)(dir)).isDirectory();
     if (directory) {

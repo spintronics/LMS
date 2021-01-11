@@ -1,5 +1,5 @@
 import express from "express";
-import { get_files, log } from "../lib/util.js";
+import { get_files, log, __dirname } from "../lib/util.js";
 import path from "path";
 import config from "../../config.js";
 
@@ -12,7 +12,7 @@ export const registerClientRoutes = function registerClientRoutes(
 ) {
   app.get(ApiUrl.get_topics, async (req, res) => {
     try {
-      let file_list = await get_files("topics");
+      let file_list = await get_files('topics');
       let normalized = map(
         pipe(replace(/.*topics/, ""), split(path.sep), filter(Boolean)),
         file_list

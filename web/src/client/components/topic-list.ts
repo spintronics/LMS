@@ -1,5 +1,6 @@
 import { css, customElement, html, LitElement, property } from "lit-element";
 import {
+  any,
   assocPath,
   concat,
   flatten,
@@ -17,23 +18,21 @@ import {
   toPairs,
   values,
 } from "ramda";
-import { state, ActionName, Listener } from "../state.js";
+import { state, ActionName, Listener, cachePaths } from "../state.js";
 import { getTopics } from "../../lib/api.js";
-import { $assocPath } from "../../lib/util.js";
+import { $assocPath, $getOr } from "../../lib/util.js";
 
 enum TopicListActions {
   updateWeight = "updateWeight",
 }
 
-//initialize weights
-state.set("topics", {});
-
 @customElement("lms-topic-list")
 export class TopicList extends LitElement {
   @property({ type: Object }) topicTree: TopicNode = {};
   @property({ type: Object }) weights: { [key: string]: number } = {};
-  listeners: { [key: string]: Listener } = {
+  private listeners: { [key: string]: Listener } = {
     updateWeight: new Listener(() => this.requestUpdate()),
+    loadTopics: new Listener(() => (this.topicTree = state.get("topics"))),
   };
   constructor() {
     super();
@@ -46,8 +45,11 @@ export class TopicList extends LitElement {
           state
         );
       },
-      this.listeners.updateWeight
+      {
+        listener: this.listeners.updateWeight,
+      }
     );
+    state.subscribe(ActionName.loadTopics, this.listeners.loadTopics);
   }
   disconnectedCallback() {
     super.disconnectedCallback();
@@ -59,17 +61,13 @@ export class TopicList extends LitElement {
   protected async fetchTopics() {
     let [err, paths] = await getTopics();
     if (err) return;
-    let topicTree = reduce(
+    let topicTree: TopicNode = reduce(
       (a, parts) => assocPath(parts, { is_question: true }, a),
       {},
       paths.data
     );
-    // let topicTree = pipe(
-    //   map(pipe(replace('../client/questions\\', ''), split(/[\\,\/]/))),
-    // )(paths.data);
-    state.set("topics", topicTree);
-    this.topicTree = topicTree;
-    this.topicTree.expanded = true;
+    topicTree.expanded = true;
+    state.dispatch(ActionName.loadTopics, topicTree);
   }
   static get styles() {
     return css`
@@ -156,6 +154,8 @@ export class TopicList extends LitElement {
         <mwc-slider
           @change=${this.updateWeight.bind(this, path)}
           ?enabled=${node.enabled}
+          style="display:${path.length ? "inline-block" : "none"}"
+          value=${node.weight}
         ></mwc-slider>
       </div>
       <mwc-list ?expanded=${node.expanded}>
@@ -180,9 +180,9 @@ export class TopicList extends LitElement {
   render() {
     return html`
       <div>
-        <mwc-button raised @click=${this.fetchTopics.bind(this)}
+        <!-- <mwc-button raised @click=${this.fetchTopics.bind(this)}
           >Fetch Topics</mwc-button
-        >
+        > -->
         ${this.buildList(this.topicTree)}
       </div>
     `;

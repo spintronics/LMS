@@ -1,10 +1,13 @@
 import express, { RequestHandler } from "express";
 import { get_arg } from "../lib/util.js";
+import glob from 'globby'
 
-let dev = get_arg("mode") === "dev";
+// let dev = get_arg("mode") === "dev";
 
 const protectedRoutes = [
-  dev ? "" : "/src",
+  "/src/server",
+  "/src/typedefs",
+  "/src/lib",
   "/build/server",
   "/build/config.json",
   "/build.sh",
@@ -13,8 +16,12 @@ const protectedRoutes = [
   "/dockerfile",
 ].filter(Boolean);
 
+const override = [
+  '/src/'
+]
+
 export function limitExposure(routes = protectedRoutes) {
-  const middleware: RequestHandler = (req, res, next) => {
+  const middleware: RequestHandler = async (req, res, next) => {
     for (let route of routes) {
       if (req.path.startsWith(route)) {
         res.status(404).send();
