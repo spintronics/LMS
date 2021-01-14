@@ -1,9 +1,12 @@
 {
   "imports": {
     "@material/mwc-button": "https://unpkg.com/@material/mwc-button?module",
+    "@material/mwc-icon-button": "https://unpkg.com/@material/mwc-icon-button?module",
+    "@material/mwc-list": "https://unpkg.com/@material/mwc-list?module",
+    "@material/mwc-menu": "https://unpkg.com/@material/mwc-menu?module",
     "axios": "https://unpkg.com/axios?module",
     "lit-element": "https://unpkg.com/lit-element?module",
     "lit-html": "https://unpkg.com/lit-html?module",
-    "ramda": "https://unpkg.com/ramda?module"
+    "ramda": "https://unpkg.com/ramda@0.27.1/es/index.js?module"
   }
 }
